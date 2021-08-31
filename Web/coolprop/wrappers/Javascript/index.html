@@ -3,94 +3,62 @@
 <head>
 <meta charset="utf-8" />
 <title>CoolProp Javascript example</title>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css" />
-<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-
-<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-<script>
-//<link rel="stylesheet" href="/resources/demos/style.css" />
-</script>
-
-<!-- (Problems with CORS) script src="http://www.coolprop.sourceforge.net/jscript/coolprop.js"></script -->
 <script src="coolprop.js"></script>
 </head>
 
 <body>
-    <div class="ui-widget">
-        <label>FluidName: </label>
+    <form>
+        <label for="FluidName">FluidName: </label>
         <select id="FluidName">
-            <option>Nitrogen</option>
-            <option>R134a</option>
+            <option value = "Nitrogen" selected>Nitrogen</option>
+            <option value = "R134a">R134a</option>
         </select>
-    </div>
-    <div class="ui-widget">
-        <label>Input #1: </label>
-        <select id="Name1">
-            <option value="">Select one...</option>
-            <option value="Pressure">Pressure [Pa]</option>
-            <option value="Temperature">Temperature [K]</option>
-            <option value="Density">Density [kg/m&#179;]</option>
+		<br>
+        <label for="Property1">Property #1: </label>
+        <select id="Property1">
+            <option value="P" selected>Pressure [Pa]</option>
+            <option value="T">Temperature [K]</option>
+            <option value="D">Density [kg/m&#179;]</option>
         </select>
-        <input id ='Value1'></input>
-    </div>
-    <div class="ui-widget">
-        <label>Input #2: </label>
-        <select id="Name2">
-            <option value="">Select one...</option>
-            <option value="Pressure">Pressure [Pa]</option>
-            <option value="Temperature">Temperature [K]</option>
-            <option value="Density">Density [kg/m&#179;]</option>
+        <input type = "number" id ='Value1' value="101300"></input>
+		<br>
+        <label for="Property2">Property #2: </label>
+        <select id="Property2">
+            <option value="P">Pressure [Pa]</option>
+            <option value="T" selected>Temperature [K]</option>
+            <option value="D">Density [kg/m&#179;]</option>
         </select>
-        <input id ='Value2'></input>
-    </div>
-    
-    <button id="calc">Calculate</button>
-    <div  class="ui-widget"> 
-    <label>Output: </label>
-    </div>
-    <div class="ui-widget">
-        <p id="output">
-    </div>
-
+        <input type = "number" id ='Value2'value="312"></input><br>
+		<button type="button" onclick= "calc()">Calculate</button>
+		<button type="reset">Reset Inputs</button>
+    </form>
+	<h1>Output: </h1>
+    <p id="output"></p>
     <script>
-    function text2key(text)
-    {
-        if (text == 'Pressure [Pa]')
-            return 'P';
-        else if (text == 'Temperature [K]')
-            return 'T';
-        else if (text == 'Density [kg/m&#179;]')
-            return 'D';
-    }
-    //using jQuery
-    $('#calc').click( function() {
-        var name = $('#FluidName :selected').text()
-        var key1 = text2key($('#Name1 :selected').text())
-        var key2 = text2key($('#Name2 :selected').text())
-        var val1 = parseFloat($('#Value1').val())
-        var val2 = parseFloat($('#Value2').val())
-        
-        var T = Module.PropsSI('T', key1, val1, key2, val2, name)
-        var rho = Module.PropsSI('D', key1, val1, key2, val2, name)
-        var p = Module.PropsSI('P', key1, val1, key2, val2, name)
-        var s = Module.PropsSI('S', key1, val1, key2, val2, name)
-        var h = Module.PropsSI('H', key1, val1, key2, val2, name)
-        var cp = Module.PropsSI('C', key1, val1, key2, val2, name)
-        
-        text = ''
-        text += 'T = ' + T + ' K\n' + '<br>'
-        text += 'rho = ' + rho + ' kg/m&#179; <br>'
-        text += 'p = ' + p + ' Pa<br>'
-        text += 's = ' + s + ' J/kg/K<br>'
-        text += 'h = ' + h + ' J/kg<br>'
-        text += 'cp = ' + cp + ' J/kg/K<br>'
-        
-        $( "#output" ).html( text);
-        
-    });
+	function calc(){
+		var name = document.getElementById("FluidName").value
+		var key1 = document.getElementById("Property1").value
+		var val1 = document.getElementById("Value1").valueAsNumber
+		var key2 = document.getElementById("Property2").value
+		var val2 = document.getElementById("Value2").valueAsNumber
+	 
+		var T = Module.PropsSI('T', key1, val1, key2, val2, name)
+		var rho = Module.PropsSI('D', key1, val1, key2, val2, name)
+		var p = Module.PropsSI('P', key1, val1, key2, val2, name)
+		var s = Module.PropsSI('S', key1, val1, key2, val2, name)
+		var h = Module.PropsSI('H', key1, val1, key2, val2, name)
+		var cp = Module.PropsSI('C', key1, val1, key2, val2, name)
+		
+		output = ''
+        output += 'T = ' + T.toFixed(2) + ' K\n' + '<br>'
+        output += 'rho = ' + rho.toFixed(3) + ' kg/m&#179; <br>'
+        output += 'p = ' + p.toFixed(3) + ' Pa<br>'
+        output += 's = ' + s.toFixed(3) + ' J/(kg K)<br>'
+        output += 'h = ' + h.toFixed(3) + ' J/kg<br>'
+        output += 'cp = ' + cp.toFixed(3) + ' J/(kg K)<br>'
+		
+		document.getElementById('output').innerHTML = output
+	}
     </script>
-
 </body>
-
 </html>
